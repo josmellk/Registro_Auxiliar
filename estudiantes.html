@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Estudiantes | Sistema de Notas</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body class="dashboard-body">
+
+    <header class="topbar">
+    <div class="logo-section">
+        <h2>Sistema de Registro de Notas</h2>
+    </div>
+    
+   
+</header>
+
+      <div class="dashboard-container">
+    <aside class="sidebar">
+      <h3>Menú</h3>
+      <ul>
+        <li><a href="dashboard.html" class="active">Inicio</a></li>
+        <li><a href="cursos.html">Cursos</a></li>
+        <li><a href="estudiantes.html">Estudiantes</a></li>
+        <li><a href="notas.html">Registro de notas</a></li>
+        <li><a href="configuración.html">Configuración</a></li>
+      </ul>
+      <button onclick="logout()">Cerrar sesión</button>
+    </aside>
+
+        <main class="content">
+            <h1>Gestión de Estudiantes</h1>
+ <section class="box filter-container">
+    <div class="select-wrapper">
+        <select id="cursoSelect">
+            <option value="">Seleccione un curso...</option>
+        </select>
+        <span class="select-arrow">▼</span>
+    </div>
+</section>
+            
+            <section class="box">
+                <h3>Añadir estudiante manualmente</h3>
+                <div class="form-grid">
+                    <input type="text" id="addCodigo" placeholder="Código">
+                    <input type="text" id="addApellidos" placeholder="Apellidos">
+                    <input type="text" id="addNombres" placeholder="Nombres">
+                    <input type="email" id="addCorreo" placeholder="Correo">
+                    <button id="btnManual">Registrar Estudiante</button>
+                </div>
+            </section>
+
+            <section class="box">
+                <h3>Cargar estudiantes desde Excel</h3>
+                <input type="file" id="archivoExcel" accept=".xlsx, .xls">
+                <button id="btnCargar">Cargar archivo</button>
+            </section>
+
+            <section class="box">
+                <h3>Lista de estudiantes matriculados</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Código</th>
+                            <th>Apellidos</th>
+                            <th>Nombres</th>
+                            <th>Correo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaEstudiantes"></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="js/estudiantes.js"></script>
+</body>
+</html>

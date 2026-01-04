@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cursos | Sistema de Notas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard-body">
+
+ <header class="topbar">
+    <div class="logo-section">
+        <h2>Sistema de Registro de Notas</h2>
+    </div>
+    
+</header>
+
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h3>Menú</h3>
+      <ul>
+        <li><a href="dashboard.html" class="active">Inicio</a></li>
+        <li><a href="cursos.html">Cursos</a></li>
+        <li><a href="estudiantes.html">Estudiantes</a></li>
+        <li><a href="notas.html">Registro de notas</a></li>
+        <li><a href="configuración.html">Configuración</a></li>
+      </ul>
+      <button onclick="logout()">Cerrar sesión</button>
+    </aside>
+
+    <main class="content">
+
+      <h1>Gestión de Cursos</h1>
+
+      <section class="box">
+        <h3 id="formTitle">Nuevo curso</h3>
+
+        <div class="form-grid">
+          <input type="text" id="nombreCurso" placeholder="Nombre del curso">
+          <input type="text" id="codigoCurso" placeholder="Código">
+          <input type="text" id="semestre" placeholder="Semestre (Ej. 2026-I)">
+        </div>
+
+        <div style="margin-top: 15px;">
+          <button id="btnAgregarCurso">Agregar curso</button>
+          <button id="btnCancelarEdicion" style="display: none; background-color: #95a5a6;">Cancelar</button>
+        </div>
+      </section>
+
+      <section class="box">
+        <h3>Lista de cursos registrados</h3>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Curso</th>
+              <th>Semestre</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tablaCursos"></tbody>
+        </table>
+      </section>
+
+    </main>
+  </div>
+
+  <script type="module" src="js/cursos.js"></script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Analítico | Sistema de Notas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dashboard-body">
+
+  <header class="topbar">
+    <h2>Sistema de Registro de Notas</h2>
+    
+  </header>
+
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h3>Menú</h3>
+      <ul>
+        <li><a href="dashboard.html" class="active">Inicio</a></li>
+        <li><a href="cursos.html">Cursos</a></li>
+        <li><a href="estudiantes.html">Estudiantes</a></li>
+        <li><a href="notas.html">Registro de notas</a></li>
+        <li><a href="configuración.html">Configuración</a></li>
+      </ul>
+      <button onclick="logout()">Cerrar sesión</button>
+    </aside>
+
+    <main class="content">
+      <div class="header-flex" style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>Resumen de Rendimiento</h1>
+        <select id="filtroCurso" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; width: 250px;">
+            <option value="todos">Todos los cursos</option>
+        </select>
+      </div>
+
+      <h2 class="unidad-title" style="border-bottom: 3px solid #3498db; margin-top: 20px;">Estadísticas Unidad I</h2>
+      <div class="stats-grid" id="stats-u1" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px;">
+        </div>
+
+      <div class="dashboard-triada" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
+        <div class="box card-analisis">
+          <h3 style="color: #e74c3c;">Riesgo Crítico (U1)</h3>
+          <table><thead><tr><th>Estudiante</th><th>Nota</th></tr></thead><tbody id="u1-riesgo"></tbody></table>
+        </div>
+        <div class="box card-analisis">
+          <h3 style="color: #f39c12;">Regulares (U1)</h3>
+          <table><thead><tr><th>Estudiante</th><th>Nota</th></tr></thead><tbody id="u1-regular"></tbody></table>
+        </div>
+        <div class="box card-analisis">
+          <h3 style="color: #27ae60;">Sobresalientes (U1)</h3>
+          <table><thead><tr><th>Estudiante</th><th>Nota</th></tr></thead><tbody id="u1-honor"></tbody></table>
+        </div>
+      </div>
+
+      <h2 class="unidad-title" style="border-bottom: 3px solid #2ecc71; margin-top: 40px;">Estadísticas Unidad II</h2>
+      <div class="stats-grid" id="stats-u2" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 15px;">
+        </div>
+
+      <div class="dashboard-triada" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
+        <div class="box card-analisis">
+          <h3 style="color: #e74c3c;">Riesgo Crítico (U2)</h3>
+          <table><thead><tr><th>Estudiante</th><th>Nota</th></tr></thead><tbody id="u2-riesgo"></tbody></table>
+        </div>
+        <div class="box card-analisis">
+          <h3 style="color: #f39c12;">Regulares (U2)</h3>
+          <table><thead><tr><th>Estudiante</th><th>Nota</th></tr></thead><tbody id="u2-regular"></tbody></table>
+        </div>
+        <div class="box card-analisis">
+          <h3 style="color: #27ae60;">Sobresalientes (U2)</h3>
+          <table><thead><tr><th>Estudiante</th><th>Nota</th></tr></thead><tbody id="u2-honor"></tbody></table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

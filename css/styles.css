@@ -1,0 +1,718 @@
+/* ===== RESET BÁSICO ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== ESTILO GENERAL ===== */
+body {
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  height: 100vh;
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+/* ===== TARJETA LOGIN ===== */
+.login-card {
+  background: #ffffff;
+  width: 380px;
+  padding: 35px;
+  border-radius: 8px;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+/* ===== TÍTULOS ===== */
+.login-card h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #7f8c8d;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+/* ===== FORMULARIO ===== */
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #2980b9;
+}
+
+/* ===== BOTÓN ===== */
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #1f6391;
+}
+
+/* ===== MENSAJES ===== */
+.mensaje {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.error {
+  color: #c0392b;
+}
+
+/* ===== FOOTER ===== */
+.login-footer {
+  margin-top: 20px;
+  font-size: 12px;
+  color: #ecf0f1;
+}
+
+/* ===== DASHBOARD ===== */
+
+.dashboard-body {
+  background: #ecf0f1;
+  height: 100vh;
+}
+
+/* BARRA SUPERIOR */
+.topbar {
+  background: #2c3e50;
+  color: white;
+  padding: 15px 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.topbar button {
+  background: #c0392b;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.topbar button:hover {
+  background: #a93226;
+}
+
+/* CONTENEDOR */
+.dashboard-container {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 230px;
+  background: #34495e;
+  padding: 20px;
+  color: white;
+}
+
+.sidebar h3 {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #7f8c8d;
+  padding-bottom: 5px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar ul li {
+  margin-bottom: 12px;
+}
+
+.sidebar ul li a {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.sidebar ul li a:hover {
+  text-decoration: underline;
+}
+
+/* CONTENIDO */
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+.content h1 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.descripcion {
+  color: #555;
+  margin-bottom: 30px;
+}
+
+/* TARJETAS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.card h3 {
+  color: #2980b9;
+  margin-bottom: 8px;
+}
+
+.card p {
+  font-size: 14px;
+  color: #555;
+}
+
+/* ===== ELEMENTOS GENERALES ===== */
+
+.box {
+  background: white;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+table th {
+  background: #2c3e50;
+  color: white;
+}
+
+.btn-danger {
+  background: #c0392b;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-danger:hover {
+  background: #a93226;
+}
+
+.btn-link {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.sidebar a.active {
+  font-weight: bold;
+  text-decoration: underline;
+}
+/* Contenedor para habilitar scroll horizontal si la tabla es muy ancha */
+.table-container {
+    overflow-x: auto;
+    background: white;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+/* Diseño de la Tabla Consolidada */
+#tablaConsolidada {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1000px; /* Asegura que no se amontone el contenido */
+}
+
+/* Encabezados de Grupos (Unidad I, Unidad II, Prom. Final) */
+.head-unidad-1 {
+    background-color: #34495e !important; /* Gris azulado del sidebar */
+    color: #ffffff !important;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #2c3e50;
+}
+
+.head-unidad-2 {
+    background-color: #2c3e50 !important; /* Gris oscuro del topbar */
+    color: #ffffff !important;
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #2c3e50;
+}
+
+.head-final {
+    background-color: #27ae60 !important; /* Verde esmeralda para el éxito */
+    color: #ffffff !important;
+    text-align: center;
+    border: 1px solid #219150;
+}
+
+/* Sub-encabezados (CC, CP, CA, Prom U1...) */
+#tablaConsolidada thead tr:last-child th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    font-size: 12px;
+    padding: 8px 5px;
+}
+
+/* Estilo para las celdas de datos */
+#tablaConsolidada td {
+    padding: 8px 5px;
+    text-align: center;
+    border: 1px solid #eee;
+}
+
+/* Resaltado de filas al pasar el mouse */
+#tablaConsolidada tbody tr:hover {
+    background-color: #f1f7ff;
+}
+
+/* Inputs de notas pequeños y centrados */
+.nota-input {
+    width: 50px !important; /* Sobrescribe el width 100% general */
+    margin-bottom: 0 !important;
+    padding: 4px !important;
+    text-align: center;
+    font-size: 13px;
+}
+
+/* Colores de Notas (Semáforo) */
+.nota-roja {
+    color: #c0392b; /* Tu color rojo de mensajes de error */
+    font-weight: bold;
+}
+
+.nota-azul {
+    color: #2980b9; /* Tu color azul de botones */
+    font-weight: bold;
+}
+/* 1. Estilo para los ENCABEZADOS de Código y Estudiante (Azul Oscuro) */
+.col-header-identificador {
+    background-color: #2c3e50 !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: 1px solid #34495e !important;
+}
+
+/* 2. Estilo para la LISTA de Estudiantes (Gris claro para legibilidad) */
+#cuerpoNotas td:first-child, 
+#cuerpoNotas td:nth-child(2) {
+    background-color: #f9f9f9; /* Color suave para que no compita con el encabezado */
+    color: #2c3e50;
+    font-weight: 600;
+    text-align: left;
+    padding-left: 15px;
+}
+
+/* 3. Ajuste para que el texto de los pesos dinámicos sea legible */
+#tablaConsolidada thead tr:last-child th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    font-size: 11px;
+}
+/* Botones de control en cabecera */
+.btn-add, .btn-remove {
+    border: none;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    margin: 0 2px;
+}
+.btn-add { background-color: #27ae60; }
+.btn-remove { background-color: #e74c3c; }
+
+/* Estilo de la tabla consolidada */
+.table-container { overflow-x: auto; background: white; padding: 10px; border-radius: 8px; }
+#tablaConsolidada { width: 100%; border-collapse: collapse; min-width: 1100px; }
+#tablaConsolidada th, #tablaConsolidada td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+
+/* Encabezados */
+.col-header-identificador { background-color: #2c3e50 !important; color: white !important; }
+.head-unidad-1 { background-color: #34495e !important; color: white !important; }
+.head-unidad-2 { background-color: #2c3e50 !important; color: white !important; }
+.head-final { background-color: #27ae60 !important; color: white !important; }
+
+/* Inputs de notas */
+.nota-input { width: 42px !important; margin: 2px !important; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
+.nota-roja { color: #c0392b; font-weight: bold; }
+.nota-azul { color: #2980b9; font-weight: bold; }
+
+.sidebar {
+    width: 260px;
+    background-color: #0f172a; /* Basado en tus capturas */
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* Alinea elementos de arriba a abajo */
+    padding: 20px;
+    position: sticky;
+    top: 0;
+}
+
+.menu-top {
+    flex-grow: 1; /* No es estrictamente necesario si usamos el margen auto abajo */
+}
+
+.menu-bottom {
+    margin-top: auto; /* Esta es la propiedad mágica que empuja el botón al fondo */
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Opcional: línea divisoria */
+}
+
+.btn-logout {
+    width: 100%;
+    background-color: #3498db; /* Azul de tu captura */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-logout:hover {
+    background-color: #2980b9;
+}
+/* Estilos para el correo en el header */
+.topbar {
+  height: 80px; /* Aumentamos la altura de 70px a 80px o 90px */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px; /* Espaciado lateral */
+    background: #0f172a; /* Color oscuro profesional */
+    color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.user-info-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.email-display {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--secondary); /* Usa el color pizarra de tus variables */
+    background: #276eb4;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid #cbd5e1;
+}
+
+.user-icon {
+    background: var(--primary);
+    color: rgb(187, 18, 18);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+/* Contenedor del encabezado para alinear elementos */
+th[id^="th-u"] {
+    white-space: nowrap;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Estilo base para los botones circulares (+ y -) */
+.btn-add, .btn-remove {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%; /* Los hace circulares */
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    vertical-align: middle;
+    line-height: 1;
+}
+
+/* Botón Verde (+) */
+.btn-add {
+    background-color: #27ae60; /* Verde esmeralda */
+}
+
+.btn-add:hover {
+    background-color: #219150;
+    transform: scale(1.15);
+}
+
+/* Botón Rojo (-) */
+.btn-remove {
+    background-color: #e74c3c; /* Rojo coral */
+}
+
+.btn-remove:hover {
+    background-color: #c0392b;
+    transform: scale(1.15);
+}
+
+/* Estilo del texto del porcentaje para que no se pegue */
+th span[id^="p-u"] {
+    margin-right: 2px;
+    font-weight: normal;
+    opacity: 0.9;
+}
+/* Estilo para el texto principal del encabezado (CC, CP, CA) */
+th[id^="th-u"] {
+    /* Aumenta el tamaño del texto */
+    font-weight: 1000;       /* Negrita extra fuerte */
+    color: #2c3e50;         /* Un color oscuro elegante */
+    text-transform: uppercase; /* Asegura que CC esté en mayúsculas */
+    padding: 12px 8px;      /* Más espacio interno */
+    white-space: nowrap;    /* Evita que se rompa en dos líneas */
+}
+
+/* Estilo específico para el porcentaje dentro del paréntesis (20%) */
+th span[id^="p-u"] {
+    font-size: 0.8rem;     /* Un poco más pequeño que las letras para equilibrio */
+    font-weight: 700;       /* Negrita clara */
+    color: #34495e;         /* Color ligeramente distinto para contraste */
+    margin-left: 2px;
+}
+
+/* Ajuste adicional para los botones al lado del texto más grande */
+.btn-add, .btn-remove {
+    margin-bottom: 2px;     /* Alineación visual fina con el texto más grande */
+}
+/* Contenedor del filtro */
+.filter-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 30px !important;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.select-label {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 0.95rem;
+}
+
+/* Envoltorio para el icono personalizado */
+.select-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+}
+
+/* El SELECT profesional */
+#cursoSelect {
+    width: 100%;
+    appearance: none; /* Elimina la flecha fea por defecto */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    padding: 12px 45px 12px 15px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    color: #334155;
+    
+    background-color: #f8fafc;
+    border: 2px solid #1a2d46;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efectos al interactuar */
+#cursoSelect:hover {
+    border-color: #94a3b8;
+    background-color: #f3f4f7;
+}
+
+#cursoSelect:focus {
+    outline: none;
+    border-color: #0834f5; /* Color Indigo de tu marca */
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    background-color: #f8f3f3;
+}
+
+/* Icono de flecha personalizado */
+.select-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #2b4569;
+    font-size: 0.7rem;
+    pointer-events: none; /* Para que el clic pase al select */
+    transition: transform 0.3s ease;
+}
+
+/* Cuando el select está enfocado, la flecha gira (opcional con JS) */
+#cursoSelect:focus + .select-icon {
+    color: #2c3e50;
+    transform: translateY(-50%) rotate(180deg);
+}
+/* Contenedor relativo para posicionar la flecha */
+.select-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 500px; /* Ajusta según el ancho deseado */
+}
+
+/* Estilo del SELECT */
+#cursoSelect {
+    width: 100%;
+    padding: 12px 40px 12px 15px; /* Espacio extra a la derecha para la flecha */
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    background-color: #f8fafc;
+    border: 2px solid #1e293b; /* Borde oscuro como en tu imagen */
+    border-radius: 10px;
+    cursor: pointer;
+    appearance: none; /* Seguimos ocultando la flecha fea del sistema */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: all 0.2s ease;
+}
+
+/* La nueva flecha personalizada */
+.select-arrow {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    color: #1e293b;
+    pointer-events: none; /* Importante: permite hacer clic a través de la flecha */
+}
+
+/* Efectos al pasar el mouse y enfocar */
+#cursoSelect:hover {
+    background-color: #ffffff;
+    border-color: #4f46e5;
+}
+
+#cursoSelect:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+/* Contenedor relativo para anclar la flecha */
+.select-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Estilo del SELECT (sin flecha nativa) */
+#cursoSelect {
+    width: 100%;
+    padding: 12px 40px 12px 15px; /* Espacio a la derecha para la flecha */
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+    background-color: #f8fafc;
+    border: 2px solid #1e293b;
+    border-radius: 10px;
+    cursor: pointer;
+    appearance: none; /* Oculta la flecha por defecto */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    transition: all 0.2s ease;
+}
+
+/* La nueva flecha visual */
+.select-arrow {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    color: #1e293b;
+    pointer-events: none; /* Permite hacer clic a través del icono */
+}
+
+/* Efectos de interacción */
+#cursoSelect:hover {
+    background-color: #ffffff;
+    border-color: #4f46e5;
+}
+
+#cursoSelect:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}

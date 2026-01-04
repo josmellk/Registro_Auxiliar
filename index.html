@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Registro de Notas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="login-wrapper">
+
+    <div class="login-card">
+      <h1>Sistema de Notas</h1>
+      <p class="subtitle">Acceso docente</p>
+
+      <label for="email">Correo institucional</label>
+      <input type="email" id="email" placeholder="docente@universidad.edu.pe">
+
+      <label for="password">Contraseña</label>
+      <input type="password" id="password" placeholder="••••••••">
+
+      <button id="btnLogin">Iniciar sesión</button>
+
+      <p id="mensaje" class="mensaje"></p>
+    </div>
+
+    <footer class="login-footer">
+      © 2026 – Sistema Académico de Registro de Notas
+    </footer>
+
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword 
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAs1nLZNlUyesu4LKSiHpx7BzCguRKSvSo",
+      authDomain: "sistema-notas-docente.firebaseapp.com",
+      projectId: "sistema-notas-docente",
+      storageBucket: "sistema-notas-docente.firebasestorage.app",
+      messagingSenderId: "906918983748",
+      appId: "1:906918983748:web:99ed6bf8b65b7fafcb6411"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const btnLogin = document.getElementById("btnLogin");
+    const mensaje = document.getElementById("mensaje");
+
+    btnLogin.addEventListener("click", () => {
+      const correo = document.getElementById("email").value.trim();
+      const clave = document.getElementById("password").value.trim();
+
+      if (!correo || !clave) {
+        mensaje.textContent = "Complete todos los campos";
+        mensaje.className = "mensaje error";
+        return;
+      }
+
+      signInWithEmailAndPassword(auth, correo, clave)
+        .then(() => {
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          mensaje.textContent = error.code;
+          mensaje.className = "mensaje error";
+          console.error(error);
+        });
+    });
+
+    console.log("Firebase inicializado correctamente");
+  </script>
+
+</body>
+</html>
