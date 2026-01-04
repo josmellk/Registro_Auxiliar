@@ -48,7 +48,7 @@ async function procesarCurso() {
   const codigo = codigoCurso.value.trim();
   const semestre = semestreInput.value.trim();
 
-  if (!nombre || !codigo || !semester) {
+  if (!nombre || !codigo || !semestre) {
     alert("Por favor, complete todos los campos.");
     return;
   }
