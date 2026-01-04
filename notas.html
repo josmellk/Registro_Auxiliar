@@ -1,97 +1,103 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Registro Consolidado | Sistema de Notas</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Registro Consolidado | Sistema de Notas</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="dashboard-body">
 
-    <header class="topbar">
-        <div class="logo-section">
-            <h2>Sistema de Registro de Notas</h2>
-        </div>
-        <div class="user-info-header">
-            <span id="userEmailHeader" class="email-display">Cargando...</span>
-        </div>
-    </header>
-
-    <div class="dashboard-container">
-        <aside class="sidebar">
-            <h3>Menú</h3>
-            <ul>
-                <li><a href="dashboard.html">Inicio</a></li>
-                <li><a href="cursos.html">Cursos</a></li>
-                <li><a href="estudiantes.html">Estudiantes</a></li>
-                <li><a href="notas.html" class="active">Registro de notas</a></li>
-                <li><a href="configuración.html">Configuración</a></li>
-            </ul>
-            <button onclick="logout()" class="btn-logout-sidebar">Cerrar sesión</button>
-        </aside>
-
-        <main class="content">
-            <div class="header-flex">
-                <h1>Registro Consolidado</h1>
-                <div class="actions-header">
-                    <button id="btnImprimir" class="btn-pdf">📄 Exportar PDF</button>
-                </div>
-            </div>
-
-            <section class="box filter-container">
-    <div class="select-wrapper">
-        <select id="cursoSelect">
-            <option value="">Seleccione un curso...</option>
-        </select>
-        <span class="select-arrow">▼</span>
+  <header class="topbar">
+    <div class="logo-section">
+        <h2>Sistema de Registro de Notas</h2>
     </div>
-</section>
-
-            <section class="box table-container">
-                <table id="tablaConsolidada">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">Código</th>
-                            <th rowspan="2">Estudiante</th>
-                            <th colspan="4" class="head-u1">UNIDAD I</th>
-                            <th colspan="4" class="head-u2">UNIDAD II</th>
-                            <th rowspan="2">PROM. FINAL</th>
-                        </tr>
-                        <tr>
-                            <th id="th-u1-cc">CC (<span id="p-u1-cc">0</span>%) 
-                                <button class="btn-add" onclick="agregarColumna('u1-cc')">+</button>
-                                <button class="btn-remove" onclick="quitarColumna('u1-cc')">-</button>
-                            </th>
-                            <th id="th-u1-cp">CP (<span id="p-u1-cp">0</span>%) 
-                                <button class="btn-add" onclick="agregarColumna('u1-cp')">+</button>
-                                <button class="btn-remove" onclick="quitarColumna('u1-cp')">-</button>
-                            </th>
-                            <th id="th-u1-ca">CA (<span id="p-u1-ca">0</span>%) 
-                                <button class="btn-add" onclick="agregarColumna('u1-ca')">+</button>
-                                <button class="btn-remove" onclick="quitarColumna('u1-ca')">-</button>
-                            </th>
-                            <th class="col-prom">Prom U1</th>
-                            <th id="th-u2-cc">CC (<span id="p-u2-cc">0</span>%) 
-                                <button class="btn-add" onclick="agregarColumna('u2-cc')">+</button>
-                            </th>
-                            <th id="th-u2-cp">CP (<span id="p-u2-cp">0</span>%) 
-                                <button class="btn-add" onclick="agregarColumna('u2-cp')">+</button>
-                            </th>
-                            <th id="th-u2-ca">CA (<span id="p-u2-ca">0</span>%) 
-                                <button class="btn-add" onclick="agregarColumna('u2-ca')">+</button>
-                            </th>
-                            <th class="col-prom">Prom U2</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cuerpoNotas"></tbody>
-                </table>
-
-                <button class="btn-primary" onclick="guardarNotas()">Guardar Registro</button>
-            </section>
-        </main>
+    <div class="user-info-header">
+        <span id="userEmailHeader" class="email-display">Cargando usuario...</span>
     </div>
+  </header>
 
-    <script type="module" src="js/notas.js"></script>
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h3>Menú</h3>
+      <ul>
+        <li><a href="dashboard.html">Inicio</a></li>
+        <li><a href="cursos.html">Cursos</a></li>
+        <li><a href="estudiantes.html">Estudiantes</a></li>
+        <li><a href="notas.html" class="active">Registro de notas</a></li>
+        <li><a href="configuración.html">Configuración</a></li>
+      </ul>
+      <button onclick="logout()" class="btn-logout-sidebar">Cerrar sesión</button>
+    </aside>
+
+    <main class="content">
+      <div class="header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h1>Registro Consolidado</h1>
+          <button id="btnImprimir" class="btn-pdf" style="background: #e67e22; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+              📄 Exportar PDF
+          </button>
+      </div>
+
+      <section class="box filter-container">
+        <div class="select-wrapper" style="position: relative; width: 100%; max-width: 500px;">
+            <select id="cursoSelect">
+              <option value="">Seleccione un curso...</option>
+            </select>
+            <span class="select-arrow" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;">▼</span>
+        </div>
+      </section>
+
+      <section class="box table-container">
+        <table id="tablaConsolidada">
+          <thead>
+            <tr>
+              <th rowspan="2" class="col-header-identificador">Código</th>
+              <th rowspan="2" class="col-header-identificador">Estudiante</th>
+              <th colspan="4" class="head-unidad-1">UNIDAD I</th>
+              <th colspan="4" class="head-unidad-2">UNIDAD II</th>
+              <th rowspan="2" class="head-final">PROM. FINAL</th>
+            </tr>
+            <tr>
+              <th id="th-u1-cc">CC (<span id="p-u1-cc">0</span>%) 
+                <button class="btn-add" onclick="agregarColumna('u1-cc')">+</button> 
+                <button class="btn-remove" onclick="quitarColumna('u1-cc')">-</button>
+              </th>
+              <th id="th-u1-cp">CP (<span id="p-u1-cp">0</span>%) 
+                <button class="btn-add" onclick="agregarColumna('u1-cp')">+</button> 
+                <button class="btn-remove" onclick="quitarColumna('u1-cp')">-</button>
+              </th>
+              <th id="th-u1-ca">CA (<span id="p-u1-ca">0</span>%) 
+                <button class="btn-add" onclick="agregarColumna('u1-ca')">+</button> 
+                <button class="btn-remove" onclick="quitarColumna('u1-ca')">-</button>
+              </th>
+              <th style="background-color: #ecf0f1; color: #333;">Prom U1</th>
+
+              <th id="th-u2-cc">CC (<span id="p-u2-cc">0</span>%) 
+                <button class="btn-add" onclick="agregarColumna('u2-cc')">+</button> 
+                <button class="btn-remove" onclick="quitarColumna('u2-cc')">-</button>
+              </th>
+              <th id="th-u2-cp">CP (<span id="p-u2-cp">0</span>%) 
+                <button class="btn-add" onclick="agregarColumna('u2-cp')">+</button> 
+                <button class="btn-remove" onclick="quitarColumna('u2-cp')">-</button>
+              </th>
+              <th id="th-u2-ca">CA (<span id="p-u2-ca">0</span>%) 
+                <button class="btn-add" onclick="agregarColumna('u2-ca')">+</button> 
+                <button class="btn-remove" onclick="quitarColumna('u2-ca')">-</button>
+              </th>
+              <th style="background-color: #ecf0f1; color: #333;">Prom U2</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpoNotas"></tbody>
+        </table>
+
+        <button class="btn-primary" style="margin-top: 20px; width: 100%;" onclick="guardarNotas()">
+          Guardar Registro Consolidado
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/notas.js"></script>
 </body>
 </html>
