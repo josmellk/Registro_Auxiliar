@@ -93,7 +93,7 @@ function generarInputs(criterio, data, estId, unidad) {
     for (let i = 0; i < columnasExtra[criterio]; i++) {
         const val = (notas[i] !== undefined && notas[i] !== null) ? notas[i] : "";
         html += `<input type="text" value="${val}" class="${criterio} nota-input" 
-                  data-id="${estId}" data-unidad="${unidad}" placeholder="0-20/NP">`;
+                  data-id="${estId}" data-unidad="${unidad}" placeholder="">`;
     }
     return html;
 }
