@@ -716,3 +716,43 @@ th span[id^="p-u"] {
     border-color: #4f46e5;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
+/* --- BOTONES DE LA TABLA (CIRCULARES) --- */
+.btn-add, .btn-remove {
+    width: 24px !important;   /* Tamaño fijo pequeño */
+    height: 24px !important;  /* Tamaño fijo pequeño */
+    border-radius: 50% !important; /* Forma circular perfecta */
+    border: none !important;
+    color: white !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    margin: 0 2px !important;
+    display: inline-flex !important; /* Alineación centrada */
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    padding: 0 !important; /* Evita que el texto lo deforme */
+    line-height: 1 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    vertical-align: middle;
+}
+
+/* Color Verde para el botón + */
+.btn-add {
+    background-color: #27ae60 !important;
+}
+.btn-add:hover {
+    background-color: #2ecc71 !important;
+}
+
+/* Color Rojo para el botón - */
+.btn-remove {
+    background-color: #e74c3c !important;
+}
+.btn-remove:hover {
+    background-color: #ff5e4d !important;
+}
+
+/* Ajuste para los encabezados de la tabla para que no se estiren */
+th button {
+    margin-top: 5px;
+}
