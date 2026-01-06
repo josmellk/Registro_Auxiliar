@@ -716,3 +716,17 @@ th span[id^="p-u"] {
     border-color: #4f46e5;
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
+/* Estilo para notas mal ingresadas */
+.input-error {
+    border: 2px solid #e74c3c !important;
+    background-color: #fceae9 !important;
+    color: #c0392b !important;
+    font-weight: bold;
+    outline: none;
+}
+
+/* Opcional: estilo para cuando el input está correcto */
+.nota-input:focus {
+    border-color: #3498db;
+    background-color: #fff;
+}
