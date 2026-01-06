@@ -31,9 +31,9 @@
     </aside>
 
     <main class="content">
-      <div class="header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <div class="header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
           <h1>Registro Consolidado</h1>
-          <button id="btnImprimir" class="btn-pdf" style="background: #e67e22; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+          <button id="btnImprimir" class="btn-pdf" style="background: #e67e22; color: white; padding: 10px 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold;">
               📄 Exportar PDF
           </button>
       </div>
@@ -48,6 +48,9 @@
       </section>
 
       <section class="box table-container">
+         <button class="btn-primary" style="margin-top: 20px; width: 100%;" onclick="guardarNotas()">
+          Guardar Registro Consolidado
+        </button>
         <table id="tablaConsolidada">
           <thead>
             <tr>
