@@ -1,213 +1,255 @@
-import { db, auth } from './firebase.js';
+import { db } from './firebase.js';
 import { 
     collection, getDocs, query, where, doc, getDoc, writeBatch, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
+// --- REFERENCIAS AL DOM ---
 const cursoSelect = document.getElementById("cursoSelect");
 const cuerpoNotas = document.getElementById("cuerpoNotas");
-const btnImprimir = document.getElementById("btnImprimir");
 
-let configuracion = { u1_cc: 0, u1_cp: 0, u1_ca: 0, u2_cc: 0, u2_cp: 0, u2_ca: 0 };
-let columnasExtra = { 
-    "u1-cc": 1, "u1-cp": 1, "u1-ca": 1, 
-    "u2-cc": 1, "u2-cp": 1, "u2-ca": 1 
-};
+// --- VARIABLES DE ESTADO ---
+let configuracion = { u1_cc: 30, u1_cp: 40, u1_ca: 30, u2_cc: 30, u2_cp: 40, u2_ca: 30 };
+let columnasExtra = { "u1-cc": 1, "u1-cp": 1, "u1-ca": 1, "u2-cc": 1, "u2-cp": 1, "u2-ca": 1 };
 
-onAuthStateChanged(auth, (user) => {
-    if (user) { cargarCursos(); } 
-    else { window.location.replace("index.html"); }
-});
-
-window.logout = async function() {
-    if (confirm("¿Cerrar sesión?")) {
-        await signOut(auth);
-        window.location.replace("index.html");
-    }
-};
-
-window.agregarColumna = (crit) => { if (columnasExtra[crit] < 3) { columnasExtra[crit]++; mostrarNotas(); } };
-window.quitarColumna = (crit) => { if (columnasExtra[crit] > 1) { columnasExtra[crit]--; mostrarNotas(); } };
-
+/**
+ * 1. CARGAR CURSOS
+ */
 async function cargarCursos() {
-    const snap = await getDocs(collection(db, "cursos"));
-    cursoSelect.innerHTML = "<option value=''>Seleccione un curso...</option>";
-    snap.forEach(d => {
-        cursoSelect.innerHTML += `<option value="${d.id}">${d.data().codigo} - ${d.data().nombre}</option>`;
-    });
-}
-
-async function cargarPesosConfigurados(cursoId) {
-    const docSnap = await getDoc(doc(db, "configuracion", cursoId));
-    if (docSnap.exists()) {
-        configuracion = docSnap.data();
-        ['u1-cc','u1-cp','u1-ca','u2-cc','u2-cp','u2-ca'].forEach(k => {
-            const el = document.getElementById(`p-${k}`);
-            if(el) el.textContent = configuracion[k.replace('-','_')] || 0;
-        });
-    }
-}
-
-async function mostrarNotas() {
-    const cursoId = cursoSelect.value;
-    if (!cursoId) { cuerpoNotas.innerHTML = ""; return; }
-    
     try {
-        await cargarPesosConfigurados(cursoId);
-        const snapEst = await getDocs(query(collection(db, "estudiantes"), where("cursoId", "==", cursoId)));
-        const snapNotas = await getDocs(query(collection(db, "notas"), where("cursoId", "==", cursoId)));
-        const notasData = snapNotas.docs.map(d => d.data());
-
-        let lista = [];
-        snapEst.forEach(d => lista.push({ id: d.id, ...d.data() }));
-        lista.sort((a, b) => `${a.apellidos} ${a.nombres}`.localeCompare(`${b.apellidos} ${b.nombres}`));
-
-        cuerpoNotas.innerHTML = "";
-        lista.forEach((e, index) => {
-            const n1 = notasData.find(n => n.estudianteId === e.id && n.unidad === "1") || {};
-            const n2 = notasData.find(n => n.estudianteId === e.id && n.unidad === "2") || {};
-
-            cuerpoNotas.innerHTML += `
-                <tr data-id="${e.id}">
-                    <td class="pdf-n" style="text-align:center; font-weight:bold;">${index + 1}</td>
-                    <td class="pdf-cod" style="text-align:center;">${e.codigo}</td>
-                    <td class="pdf-nom" style="text-align:left; padding-left:10px;">${e.apellidos}, ${e.nombres}</td>
-                    <td>${generarInputs("u1-cc", n1.cc, e.id, "u1")}</td>
-                    <td>${generarInputs("u1-cp", n1.cp, e.id, "u1")}</td>
-                    <td>${generarInputs("u1-ca", n1.ca, e.id, "u1")}</td>
-                    <td class="p-u1 pdf-u1" style="font-weight:bold; background:#f8fafc">0.00</td>
-                    <td>${generarInputs("u2-cc", n2.cc, e.id, "u2")}</td>
-                    <td>${generarInputs("u2-cp", n2.cp, e.id, "u2")}</td>
-                    <td>${generarInputs("u2-ca", n2.ca, e.id, "u2")}</td>
-                    <td class="p-u2 pdf-u2" style="font-weight:bold; background:#f8fafc">0.00</td>
-                    <td class="p-final pdf-fin" style="font-weight:800; background:#edf2f7">0.00</td>
-                </tr>`;
-            actualizarFila(e.id);
+        const querySnapshot = await getDocs(collection(db, "cursos"));
+        cursoSelect.innerHTML = "<option value=''>Seleccione curso</option>";
+        querySnapshot.forEach(docSnap => {
+            const c = docSnap.data();
+            cursoSelect.innerHTML += `<option value="${docSnap.id}">${c.codigo} - ${c.nombre}</option>`;
         });
-    } catch (e) { console.error(e); }
-}
-
-function generarInputs(criterio, data, estId, unidad) {
-    let html = "";
-    const notas = Array.isArray(data) ? data : [];
-    for (let i = 0; i < columnasExtra[criterio]; i++) {
-        const val = (notas[i] !== undefined && notas[i] !== null) ? notas[i] : "";
-        html += `<input type="text" value="${val}" class="${criterio} nota-input" 
-                  data-id="${estId}" data-unidad="${unidad}" placeholder="">`;
+    } catch (error) {
+        console.error("Error al cargar cursos:", error);
     }
-    return html;
 }
 
-function actualizarFila(estId) {
-    const fila = document.querySelector(`tr[data-id="${estId}"]`);
-    if(!fila) return;
-    const calc = (u) => {
-        const cc = promGrupo(fila, `${u}-cc`) * (configuracion[`${u}_cc`] || 0) / 100;
-        const cp = promGrupo(fila, `${u}-cp`) * (configuracion[`${u}_cp`] || 0) / 100;
-        const ca = promGrupo(fila, `${u}-ca`) * (configuracion[`${u}_ca`] || 0) / 100;
-        return cc + cp + ca;
-    };
-    const u1 = calc('u1'), u2 = calc('u2');
-    fila.querySelector(".p-u1").textContent = u1.toFixed(2);
-    fila.querySelector(".p-u2").textContent = u2.toFixed(2);
-    fila.querySelector(".p-final").textContent = ((u1 + u2) / 2).toFixed(2);
+/**
+ * 2. GESTIÓN DE COLUMNAS DINÁMICAS
+ */
+window.agregarColumna = (criterio) => {
+    if (columnasExtra[criterio] < 3) {
+        columnasExtra[criterio]++;
+        mostrarNotas(); 
+    }
+};
+
+window.quitarColumna = (criterio) => {
+    if (columnasExtra[criterio] > 1) {
+        columnasExtra[criterio]--;
+        mostrarNotas();
+    }
+};
+
+/**
+ * 3. CÁLCULOS Y FORMATO
+ */
+function formatearPromedio(nota) {
+    const clase = nota < 10.5 ? 'nota-roja' : 'nota-azul';
+    return `<span class="${clase}">${nota.toFixed(2)}</span>`;
 }
 
-function promGrupo(fila, clase) {
-    const inputs = fila.querySelectorAll(`.${clase}`);
+function calcularPromedioGrupo(fila, claseCriterio) {
+    const inputs = fila.querySelectorAll(`.${claseCriterio}`);
     let suma = 0, cont = 0;
     inputs.forEach(inp => {
-        let v = inp.value.toUpperCase().trim();
-        // Validación en tiempo real
-        if (v !== "" && v !== "NP" && (isNaN(v) || v < 0 || v > 20)) {
-            inp.classList.add("input-error");
-        } else {
-            inp.classList.remove("input-error");
-            if (v !== "") {
-                suma += (v === "NP") ? 0 : parseFloat(v);
-                cont++;
-            }
+        const v = parseFloat(inp.value);
+        if (!isNaN(v)) {
+            suma += v;
+            cont++;
         }
     });
     return cont > 0 ? suma / cont : 0;
 }
 
-/**
- * FUNCIÓN DE VALIDACIÓN GLOBAL (BLOQUEO)
- */
-function validarTodaLaTabla() {
-    const errores = document.querySelectorAll(".input-error");
-    if (errores.length > 0) {
-        alert(`¡Atención! Hay ${errores.length} nota(s) mal ingresada(s). Corrígelas (marcadas en rojo) antes de continuar.`);
-        errores[0].focus(); // Enfocar el primer error
-        return false;
-    }
-    return true;
+function actualizarFila(estId) {
+    const fila = document.querySelector(`tr[data-id="${estId}"]`);
+    if(!fila) return;
+
+    const pU1 = (calcularPromedioGrupo(fila, "u1-cc") * configuracion.u1_cc / 100) + 
+                (calcularPromedioGrupo(fila, "u1-cp") * configuracion.u1_cp / 100) + 
+                (calcularPromedioGrupo(fila, "u1-ca") * configuracion.u1_ca / 100);
+
+    const pU2 = (calcularPromedioGrupo(fila, "u2-cc") * configuracion.u2_cc / 100) + 
+                (calcularPromedioGrupo(fila, "u2-cp") * configuracion.u2_cp / 100) + 
+                (calcularPromedioGrupo(fila, "u2-ca") * configuracion.u2_ca / 100);
+
+    fila.querySelector(".p-u1").innerHTML = formatearPromedio(pU1);
+    fila.querySelector(".p-u2").innerHTML = formatearPromedio(pU2);
+    
+    // Promedio Final
+    const promedioFinal = (pU1 + pU2) / 2;
+    fila.querySelector(".p-final").innerHTML = formatearPromedio(promedioFinal);
 }
 
-// SALTO DE FILA CON TAB
+function generarInputs(criterio, data, estId, rowIndex) {
+    let html = "";
+    const notas = Array.isArray(data) ? data : (data !== undefined && data !== "" ? [data] : []);
+    for (let i = 0; i < columnasExtra[criterio]; i++) {
+        const val = notas[i] !== undefined ? notas[i] : "";
+        html += `<input type="number" value="${val}" class="${criterio} nota-input" 
+                  data-id="${estId}" data-row="${rowIndex}" data-crit="${criterio}" data-sub="${i}"
+                  min="0" max="20" step="0.1">`;
+    }
+    return html;
+}
+
+/**
+ * 4. MOSTRAR NOTAS
+ */
+async function mostrarNotas() {
+    const cursoId = cursoSelect.value;
+    if (!cursoId) { cuerpoNotas.innerHTML = ""; return; }
+
+    // 1. Obtener la configuración de pesos del curso
+    const docCfg = await getDoc(doc(db, "configuracion", cursoId));
+    if (docCfg.exists()) {
+        configuracion = docCfg.data();
+    } else {
+        // Valores por defecto si no hay configuración
+        configuracion = { u1_cc: 30, u1_cp: 40, u1_ca: 30, u2_cc: 30, u2_cp: 40, u2_ca: 30 };
+    }
+
+    // 2. ACTUALIZAR ENCABEZADOS CON EL PORCENTAJE (%)
+    // Esta es la parte que faltaba o fallaba:
+    const criterios = ["u1-cc", "u1-cp", "u1-ca", "u2-cc", "u2-cp", "u2-ca"];
+    criterios.forEach(c => {
+        const key = c.replace("-", "_"); // Convierte u1-cc a u1_cc para leer de la DB
+        const nombreBase = c.split("-")[1].toUpperCase(); // Obtiene CC, CP o CA
+        const porcentaje = configuracion[key] || 0;
+        
+        const thElement = document.getElementById(`th-${c}`);
+        if (thElement) {
+            thElement.innerHTML = `
+                ${nombreBase} ${porcentaje}% 
+                <div style="margin-top:5px">
+                    <button class="btn-add" onclick="agregarColumna('${c}')">+</button>
+                    <button class="btn-remove" onclick="quitarColumna('${c}')">-</button>
+                </div>
+            `;
+        }
+    });
+    
+    try {
+        const docCfg = await getDoc(doc(db, "configuracion", cursoId));
+        if (docCfg.exists()) configuracion = docCfg.data();
+
+        const snapEst = await getDocs(query(collection(db, "estudiantes"), where("cursoId", "==", cursoId)));
+        const snapNotas = await getDocs(query(collection(db, "notas"), where("cursoId", "==", cursoId)));
+        const notasData = snapNotas.docs.map(d => d.data());
+
+        cuerpoNotas.innerHTML = "";
+        let index = 0;
+        
+        snapEst.forEach(docEst => {
+            const e = { id: docEst.id, ...docEst.data() };
+            const n1 = notasData.find(n => n.estudianteId === e.id && n.unidad === "1") || {};
+            const n2 = notasData.find(n => n.estudianteId === e.id && n.unidad === "2") || {};
+
+            cuerpoNotas.innerHTML += `
+                <tr data-id="${e.id}" data-index="${index}">
+                    <td style="font-weight:bold">${e.codigo}</td>
+                    <td style="text-align:left; padding-left:10px">${e.apellidos}, ${e.nombres}</td>
+                    <td>${generarInputs("u1-cc", n1.cc, e.id, index)}</td>
+                    <td>${generarInputs("u1-cp", n1.cp, e.id, index)}</td>
+                    <td>${generarInputs("u1-ca", n1.ca, e.id, index)}</td>
+                    <td class="p-u1">--</td>
+                    <td>${generarInputs("u2-cc", n2.cc, e.id, index)}</td>
+                    <td>${generarInputs("u2-cp", n2.cp, e.id, index)}</td>
+                    <td>${generarInputs("u2-ca", n2.ca, e.id, index)}</td>
+                    <td class="p-u2">--</td>
+                    <td class="p-final">--</td>
+                </tr>`;
+            actualizarFila(e.id);
+            index++;
+        });
+    } catch (e) { console.error(e); }
+}
+
+/**
+ * 5. NAVEGACIÓN TIPO EXCEL (CORREGIDA PARA UNIDADES)
+ */
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Tab" && e.target.classList.contains("nota-input")) {
-        const input = e.target;
-        const unidad = input.dataset.unidad;
-        const fila = input.closest("tr");
-        const inputsUnidad = fila.querySelectorAll(`.nota-input[data-unidad="${unidad}"]`);
-        if (input === inputsUnidad[inputsUnidad.length - 1] && !e.shiftKey) {
-            const sigFila = fila.nextElementSibling;
-            if (sigFila) {
-                e.preventDefault();
-                sigFila.querySelector(`.nota-input[data-unidad="${unidad}"]`).focus();
+    const active = document.activeElement;
+    if (!active.classList.contains("nota-input")) return;
+
+    const row = parseInt(active.dataset.row);
+    const crit = active.dataset.crit; 
+    const sub = parseInt(active.dataset.sub);
+
+    // Navegación Vertical (Enter / Flechas)
+    if (e.key === "Enter" || e.key === "ArrowDown") {
+        e.preventDefault();
+        const next = document.querySelector(`input[data-row="${row + 1}"][data-crit="${crit}"][data-sub="${sub}"]`);
+        if (next) { next.focus(); next.select(); }
+    }
+    if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const prev = document.querySelector(`input[data-row="${row - 1}"][data-crit="${crit}"][data-sub="${sub}"]`);
+        if (prev) { prev.focus(); prev.select(); }
+    }
+
+    // Navegación Horizontal con Salto de Fila (Tab)
+    if (e.key === "Tab" && !e.shiftKey) {
+        const esUltimaSubCol = (sub === columnasExtra[crit] - 1);
+        const unidadActual = crit.split("-")[0]; // "u1" o "u2"
+
+        // Si está en el último criterio de la unidad (CA) y última sub-columna
+        if (crit.endsWith("-ca") && esUltimaSubCol) {
+            e.preventDefault(); 
+            // Salto a la primera columna (CC) de la MISMA UNIDAD del siguiente alumno
+            const primeraCol = `${unidadActual}-cc`;
+            const siguienteFila = document.querySelector(
+                `input[data-row="${row + 1}"][data-crit="${primeraCol}"][data-sub="0"]`
+            );
+
+            if (siguienteFila) {
+                siguienteFila.focus();
+                siguienteFila.select();
             }
         }
     }
 });
 
+/**
+ * 6. GUARDAR DATOS
+ */
 window.guardarNotas = async function() {
-    if (!validarTodaLaTabla()) return; // BLOQUEO SI HAY ERRORES
-
     const cursoId = cursoSelect.value;
     if (!cursoId) return alert("Seleccione curso");
     const batch = writeBatch(db);
-
+    
     document.querySelectorAll("#cuerpoNotas tr").forEach(fila => {
         const estId = fila.dataset.id;
         ["1", "2"].forEach(u => {
-            const getValores = (c) => Array.from(fila.querySelectorAll(`.u${u}-${c}`)).map(i => {
-                let v = i.value.toUpperCase().trim();
-                return v === "" ? 0 : v;
-            });
             batch.set(doc(db, "notas", `${estId}_${cursoId}_${u}`), {
-                estudianteId: estId, cursoId, unidad: u,
-                cc: getValores("cc"), cp: getValores("cp"), ca: getValores("ca"),
+                estudianteId: estId, cursoId: cursoId, unidad: u,
+                cc: Array.from(fila.querySelectorAll(`.u${u}-cc`)).map(i => Number(i.value) || 0),
+                cp: Array.from(fila.querySelectorAll(`.u${u}-cp`)).map(i => Number(i.value) || 0),
+                ca: Array.from(fila.querySelectorAll(`.u${u}-ca`)).map(i => Number(i.value) || 0),
                 fecha: serverTimestamp()
             });
         });
     });
 
-    await batch.commit();
-    alert("¡Registro Guardado con éxito!");
-    mostrarNotas();
+    try {
+        await batch.commit();
+        alert("¡Registro guardado exitosamente!");
+        mostrarNotas();
+    } catch (e) { console.error(e); }
 };
 
-window.imprimirPDF = function() {
-    if (!validarTodaLaTabla()) return; // BLOQUEO SI HAY ERRORES
-
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4');
-    const curso = cursoSelect.options[cursoSelect.selectedIndex].text;
-    const rows = Array.from(document.querySelectorAll("#cuerpoNotas tr")).map(tr => [
-        tr.querySelector(".pdf-n").innerText,
-        tr.querySelector(".pdf-cod").innerText,
-        tr.querySelector(".pdf-nom").innerText,
-        tr.querySelector(".pdf-u1").innerText,
-        tr.querySelector(".pdf-u2").innerText,
-        tr.querySelector(".pdf-fin").innerText
-    ]);
-    doc.text("Reporte: " + curso, 14, 15);
-    doc.autoTable({ startY: 20, head: [['N°', 'Cod', 'Estudiante', 'P.U1', 'P.U2', 'Final']], body: rows });
-    doc.save(`Notas_${curso}.pdf`);
-};
+// Listeners de validación e inicialización
+document.addEventListener("input", (e) => {
+    if (e.target.classList.contains("nota-input")) {
+        if (e.target.value > 20) e.target.value = 20;
+        if (e.target.value < 0) e.target.value = 0;
+        actualizarFila(e.target.dataset.id);
+    }
+});
 
 cursoSelect.addEventListener("change", mostrarNotas);
-btnImprimir.addEventListener("click", window.imprimirPDF);
-document.addEventListener("input", (e) => { if (e.target.classList.contains("nota-input")) actualizarFila(e.target.dataset.id); });
+cargarCursos();
