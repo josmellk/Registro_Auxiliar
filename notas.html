@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Registro Consolidado | Sistema de Notas</title>
   <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body class="dashboard-body">
 
@@ -19,7 +20,7 @@
         <li><a href="dashboard.html" >Inicio</a></li>
         <li><a href="cursos.html">Cursos</a></li>
         <li><a href="estudiantes.html">Estudiantes</a></li>
-        <li><a href="notas.html"class="active">Registro de notas</a></li>
+        <li><a href="notas.html" class="active">Registro de notas</a></li>
         <li><a href="configuración.html">Configuración</a></li>
       </ul>
       <button onclick="logout()">Cerrar sesión</button>
@@ -58,13 +59,72 @@
           <tbody id="cuerpoNotas"></tbody>
         </table>
 
-        <button class="btn-primary" style="margin-top: 20px; width: 100%;" onclick="guardarNotas()">
-          Guardar Registro Consolidado
-        </button>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn-primary" style="flex: 1;" onclick="guardarNotas()">
+              Guardar Registro Consolidado
+            </button>
+            <button type="button" style="flex: 1; background-color: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;" onclick="exportarExcel()">
+              Descargar Excel
+            </button>
+        </div>
       </section>
     </main>
   </div>
 
   <script type="module" src="js/notas.js"></script>
+
+  <script>
+    /**
+     * Esta función extrae los datos DIRECTAMENTE de la pantalla actual,
+     * así que si tienes 3 columnas en CC, las 3 se irán al Excel.
+     */
+    function exportarExcel() {
+      const tabla = document.getElementById("tablaConsolidada");
+      const cursoSelect = document.getElementById("cursoSelect");
+      const nombreCurso = cursoSelect.options[cursoSelect.selectedIndex]?.text || "Registro";
+
+      // 1. Crear una matriz para guardar los datos
+      const datosParaExcel = [];
+
+      // 2. Obtener las filas de la tabla
+      const filas = tabla.querySelectorAll("tr");
+
+      filas.forEach((fila, indexFila) => {
+        const filaData = [];
+        // Buscamos tanto th como td
+        const celdas = fila.querySelectorAll("th, td");
+
+        celdas.forEach((celda) => {
+          // Si la celda tiene botones (como los de + y -), los ignoramos
+          const botones = celda.querySelectorAll("button");
+          
+          // Si la celda tiene inputs (tus notas de CC, CP, CA)
+          const inputs = celda.querySelectorAll("input");
+          
+          if (inputs.length > 0) {
+            // Si hay varios inputs (como tus 3 columnas de CC), 
+            // los ponemos cada uno en una celda de Excel diferente
+            inputs.forEach(input => {
+                filaData.push(input.value || "0");
+            });
+          } else {
+            // Si es texto normal (Nombre, Código, Promedio o Títulos)
+            // Limpiamos el texto de los botones (+/-) para que el encabezado quede limpio
+            let textoLimpio = celda.innerText.split('+')[0].split('-')[0].trim();
+            filaData.push(textoLimpio);
+          }
+        });
+        datosParaExcel.push(filaData);
+      });
+
+      // 3. Convertir la matriz a una hoja de Excel
+      const ws = XLSX.utils.aoa_to_sheet(datosParaExcel);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Notas Consolidadas");
+
+      // 4. Descargar archivo
+      XLSX.writeFile(wb, `Registro_Notas_${nombreCurso}.xlsx`);
+    }
+  </script>
 </body>
 </html>

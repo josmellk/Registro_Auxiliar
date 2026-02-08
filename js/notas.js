@@ -69,13 +69,13 @@ function actualizarFila(estId) {
     const fila = document.querySelector(`tr[data-id="${estId}"]`);
     if(!fila) return;
 
-    const pU1 = (calcularPromedioGrupo(fila, "u1-cc") * configuracion.u1_cc / 100) + 
-                (calcularPromedioGrupo(fila, "u1-cp") * configuracion.u1_cp / 100) + 
-                (calcularPromedioGrupo(fila, "u1-ca") * configuracion.u1_ca / 100);
+    const pU1 = (calcularPromedioGrupo(fila, "u1-cc") * (configuracion.u1_cc || 0) / 100) + 
+                (calcularPromedioGrupo(fila, "u1-cp") * (configuracion.u1_cp || 0) / 100) + 
+                (calcularPromedioGrupo(fila, "u1-ca") * (configuracion.u1_ca || 0) / 100);
 
-    const pU2 = (calcularPromedioGrupo(fila, "u2-cc") * configuracion.u2_cc / 100) + 
-                (calcularPromedioGrupo(fila, "u2-cp") * configuracion.u2_cp / 100) + 
-                (calcularPromedioGrupo(fila, "u2-ca") * configuracion.u2_ca / 100);
+    const pU2 = (calcularPromedioGrupo(fila, "u2-cc") * (configuracion.u2_cc || 0) / 100) + 
+                (calcularPromedioGrupo(fila, "u2-cp") * (configuracion.u2_cp || 0) / 100) + 
+                (calcularPromedioGrupo(fila, "u2-ca") * (configuracion.u2_ca || 0) / 100);
 
     fila.querySelector(".p-u1").innerHTML = formatearPromedio(pU1);
     fila.querySelector(".p-u2").innerHTML = formatearPromedio(pU2);
@@ -98,48 +98,52 @@ function generarInputs(criterio, data, estId, rowIndex) {
 }
 
 /**
- * 4. MOSTRAR NOTAS
+ * 4. MOSTRAR NOTAS (MODIFICADO PARA PERSISTENCIA)
  */
 async function mostrarNotas() {
     const cursoId = cursoSelect.value;
     if (!cursoId) { cuerpoNotas.innerHTML = ""; return; }
 
-    // 1. Obtener la configuración de pesos del curso
-    const docCfg = await getDoc(doc(db, "configuracion", cursoId));
-    if (docCfg.exists()) {
-        configuracion = docCfg.data();
-    } else {
-        // Valores por defecto si no hay configuración
-        configuracion = { u1_cc: 30, u1_cp: 40, u1_ca: 30, u2_cc: 30, u2_cp: 40, u2_ca: 30 };
-    }
-
-    // 2. ACTUALIZAR ENCABEZADOS CON EL PORCENTAJE (%)
-    // Esta es la parte que faltaba o fallaba:
-    const criterios = ["u1-cc", "u1-cp", "u1-ca", "u2-cc", "u2-cp", "u2-ca"];
-    criterios.forEach(c => {
-        const key = c.replace("-", "_"); // Convierte u1-cc a u1_cc para leer de la DB
-        const nombreBase = c.split("-")[1].toUpperCase(); // Obtiene CC, CP o CA
-        const porcentaje = configuracion[key] || 0;
-        
-        const thElement = document.getElementById(`th-${c}`);
-        if (thElement) {
-            thElement.innerHTML = `
-                ${nombreBase} ${porcentaje}% 
-                <div style="margin-top:5px">
-                    <button class="btn-add" onclick="agregarColumna('${c}')">+</button>
-                    <button class="btn-remove" onclick="quitarColumna('${c}')">-</button>
-                </div>
-            `;
-        }
-    });
-    
     try {
+        // 1. Obtener la configuración de pesos del curso
         const docCfg = await getDoc(doc(db, "configuracion", cursoId));
-        if (docCfg.exists()) configuracion = docCfg.data();
+        if (docCfg.exists()) {
+            configuracion = docCfg.data();
+        } else {
+            configuracion = { u1_cc: 30, u1_cp: 40, u1_ca: 30, u2_cc: 30, u2_cp: 40, u2_ca: 30 };
+        }
 
+        // 2. Obtener Estudiantes y Notas
         const snapEst = await getDocs(query(collection(db, "estudiantes"), where("cursoId", "==", cursoId)));
         const snapNotas = await getDocs(query(collection(db, "notas"), where("cursoId", "==", cursoId)));
         const notasData = snapNotas.docs.map(d => d.data());
+
+        // --- MEJORA DE PERSISTENCIA: Ajustar columnasExtra según datos guardados ---
+        notasData.forEach(n => {
+            const u = `u${n.unidad}-`;
+            if (n.cc && n.cc.length > columnasExtra[u+'cc']) columnasExtra[u+'cc'] = n.cc.length;
+            if (n.cp && n.cp.length > columnasExtra[u+'cp']) columnasExtra[u+'cp'] = n.cp.length;
+            if (n.ca && n.ca.length > columnasExtra[u+'ca']) columnasExtra[u+'ca'] = n.ca.length;
+        });
+
+        // 3. ACTUALIZAR ENCABEZADOS
+        const criterios = ["u1-cc", "u1-cp", "u1-ca", "u2-cc", "u2-cp", "u2-ca"];
+        criterios.forEach(c => {
+            const key = c.replace("-", "_");
+            const nombreBase = c.split("-")[1].toUpperCase();
+            const porcentaje = configuracion[key] || 0;
+            
+            const thElement = document.getElementById(`th-${c}`);
+            if (thElement) {
+                thElement.innerHTML = `
+                    ${nombreBase} ${porcentaje}% 
+                    <div style="margin-top:5px">
+                        <button class="btn-add" onclick="agregarColumna('${c}')">+</button>
+                        <button class="btn-remove" onclick="quitarColumna('${c}')">-</button>
+                    </div>
+                `;
+            }
+        });
 
         cuerpoNotas.innerHTML = "";
         let index = 0;
@@ -170,7 +174,7 @@ async function mostrarNotas() {
 }
 
 /**
- * 5. NAVEGACIÓN TIPO EXCEL (CORREGIDA PARA UNIDADES)
+ * 5. NAVEGACIÓN TIPO EXCEL
  */
 document.addEventListener("keydown", (e) => {
     const active = document.activeElement;
@@ -180,7 +184,6 @@ document.addEventListener("keydown", (e) => {
     const crit = active.dataset.crit; 
     const sub = parseInt(active.dataset.sub);
 
-    // Navegación Vertical (Enter / Flechas)
     if (e.key === "Enter" || e.key === "ArrowDown") {
         e.preventDefault();
         const next = document.querySelector(`input[data-row="${row + 1}"][data-crit="${crit}"][data-sub="${sub}"]`);
@@ -192,24 +195,17 @@ document.addEventListener("keydown", (e) => {
         if (prev) { prev.focus(); prev.select(); }
     }
 
-    // Navegación Horizontal con Salto de Fila (Tab)
     if (e.key === "Tab" && !e.shiftKey) {
         const esUltimaSubCol = (sub === columnasExtra[crit] - 1);
-        const unidadActual = crit.split("-")[0]; // "u1" o "u2"
+        const unidadActual = crit.split("-")[0];
 
-        // Si está en el último criterio de la unidad (CA) y última sub-columna
         if (crit.endsWith("-ca") && esUltimaSubCol) {
             e.preventDefault(); 
-            // Salto a la primera columna (CC) de la MISMA UNIDAD del siguiente alumno
             const primeraCol = `${unidadActual}-cc`;
             const siguienteFila = document.querySelector(
                 `input[data-row="${row + 1}"][data-crit="${primeraCol}"][data-sub="0"]`
             );
-
-            if (siguienteFila) {
-                siguienteFila.focus();
-                siguienteFila.select();
-            }
+            if (siguienteFila) { siguienteFila.focus(); siguienteFila.select(); }
         }
     }
 });
@@ -242,7 +238,35 @@ window.guardarNotas = async function() {
     } catch (e) { console.error(e); }
 };
 
-// Listeners de validación e inicialización
+/**
+ * NUEVA FUNCIÓN: EXPORTAR A EXCEL (Integrada en el JS principal)
+ */
+window.exportarExcel = function() {
+    const tabla = document.getElementById("tablaConsolidada");
+    const cursoNombre = cursoSelect.options[cursoSelect.selectedIndex]?.text || "Registro";
+    const datosExcel = [];
+
+    tabla.querySelectorAll("tr").forEach((fila) => {
+        const filaData = [];
+        fila.querySelectorAll("th, td").forEach((celda) => {
+            const inputs = celda.querySelectorAll("input");
+            if (inputs.length > 0) {
+                inputs.forEach(inp => filaData.push(inp.value || "0"));
+            } else {
+                let texto = celda.innerText.split('+')[0].split('-')[0].trim();
+                filaData.push(texto);
+            }
+        });
+        datosExcel.push(filaData);
+    });
+
+    const ws = XLSX.utils.aoa_to_sheet(datosExcel);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Consolidado");
+    XLSX.writeFile(wb, `Registro_Notas_${cursoNombre.replace(/\s+/g, '_')}.xlsx`);
+};
+
+// Listeners
 document.addEventListener("input", (e) => {
     if (e.target.classList.contains("nota-input")) {
         if (e.target.value > 20) e.target.value = 20;
@@ -251,5 +275,10 @@ document.addEventListener("input", (e) => {
     }
 });
 
-cursoSelect.addEventListener("change", mostrarNotas);
+cursoSelect.addEventListener("change", () => {
+    // Al cambiar de curso, reseteamos a 1 para que el nuevo curso autodetecte sus columnas
+    columnasExtra = { "u1-cc": 1, "u1-cp": 1, "u1-ca": 1, "u2-cc": 1, "u2-cp": 1, "u2-ca": 1 };
+    mostrarNotas();
+});
+
 cargarCursos();
